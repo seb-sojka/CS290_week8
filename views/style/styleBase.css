@@ -1,0 +1,85 @@
+#menu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: indigo;
+}
+
+#menu li {
+	float: left;
+}
+
+#menu li a {
+	display: inline-block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+#menu li a:hover {
+	background-color: yellow;
+	color: black;
+}
+
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
+     margin: auto;
+}
+
+.carousel-caption{
+	position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0px;
+    background: rgba(0, 0, 0, .5);
+}
+
+.carousel-caption p{
+	font-size: 20px;
+}
+
+.carousel-caption h3{
+	font-size: 40px;
+}
+
+.carousel{
+  width:640px;
+  height:360px;
+  position: absolute;
+  left:0;
+}
+
+container{
+	align-content: left;
+	float: left;
+}
+
+#recipeScroll
+{
+	position: absolute;
+	list-style-type:none;
+	height:100px;
+	width:200px;
+	border:3px solid #ccc;
+	overflow:auto;
+}
+
+.container
+{
+	left:0;
+}
+
+#recipeScrollList
+{
+	position: absolute;
+	top: 525px;
+}
+
+#downloadLink
+{
+	position: absolute;
+	top: 700px;
+}
