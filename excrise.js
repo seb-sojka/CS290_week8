@@ -6,23 +6,20 @@ var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 4217);
+app.set('port', 5454);
 app.use(express.static('views'));
 
-var exsql = require('./db.js');
+var exsql = require('./dbcon.js');
 
 app.get('/',function(req,res,next){
 	var con = {};
-	exsql.pool.query('INSERT INTO exercises(name) VALUES ("Test")');
-	exsql.pool.query('SELECT * FROM exercises', function(err, rows, field){
-		if(err){
-			next(err);
-			return;
-		}
-		con.exercises = JSON.strungify(rows);
-		res.render('home', context);
+	exsql.pool.query('INSERT INTO exercises(`name`, `reps`) VALUES ("Test", 1)', function(err){
+	    exsql.pool.query('SELECT name FROM exercises', function(err, rows, fields){
+		  con.excerises = JSON.stringify(rows);
+		  res.render('home',con);
+		});
+	  });
 	});
-});
 
 app.get('/reset-table',function(req,res,next){
 	var context = {};
