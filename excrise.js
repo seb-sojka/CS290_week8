@@ -1,6 +1,5 @@
 var express = require('express');
 
-
 var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
@@ -11,16 +10,15 @@ app.use(express.static('views'));
 
 var exsql = require('./dbcon.js');
 
+
 app.get('/',function(req,res,next){
 	var con = {};
-	exsql.pool.query('INSERT INTO exercises(`name`, `reps`) VALUES ("Test", 1)', function(err){
-	    exsql.pool.query('SELECT name FROM exercises', function(err, rows, fields){
-		  con.excerises = JSON.stringify(rows);
-		  res.render('home',con);
-		});
-	  });
+    exsql.pool.query('SELECT name FROM exercises', function(err, rows, fields){
+		con.excerises = JSON.stringify(rows);
+		res.render('home',con);
 	});
-
+});	
+	
 app.get('/reset-table',function(req,res,next){
 	var context = {};
 	exsql.pool.query("DROP TABLE IF EXISTS exercises", function(err){
@@ -35,6 +33,16 @@ app.get('/reset-table',function(req,res,next){
 			context.results = "Table reset";
 			res.render('home',context);
     })
+  });
+});
+
+app.get('/add',function(req,res,next){
+  var context = {};
+  mysql.pool.query("INSERT INTO todo (`name`) VALUES (?)", [req.query.name], function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
   });
 });
 
