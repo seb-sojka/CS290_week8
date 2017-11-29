@@ -15,6 +15,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+document.addEventListener('DOMContentLoaded', addButton);
 
 app.get('/',function(req,res,next){
 	var con = {};
