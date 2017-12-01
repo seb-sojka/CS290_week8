@@ -1,15 +1,138 @@
 <h1>Workout</h1>
 <h4>Add Workout</h4><br>
 <form>
-Name: <input type="text" id = "name" name="name"><br>
-Reps:  <input type="number" id = "reps" name="reps" min="0"><br>
-Weight: <input type="number" id = "weight" name="weight" min="0" step="5" value="30"> </input>
+Name: <input type="text" id = "name"><br>
+Reps:  <input type="number" id = "reps" min="0"><br>
+Weight: <input type="number" id = "weight" min="0" step="5" value="30"> </input>
 <select>
   <option id = "kg" value="kg">kg</option>
   <option id = "lbs" value="lbs">lbs</option>
 </select><br>
 Date: <input type="date" id = "date"> </input><br>
-<input type="submit" id= "addButton" value="Add"></input>
+<input type="submit" id= "addButton" value="Add">
 </form>
 <h4>This are the excerises you have done</h4>
-{{excerises}}
+<table id = "workout">
+	<tr id = "header">
+		<th>Exercise</th>
+		<th>Reps</th>
+		<th>Weight</th>
+		<th>Date</th>
+	</tr>
+</table>
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', addButton);
+	function createTable(payload){
+				
+		var table = document.getElementById("workout");
+		
+		console.log("Table" + table.rows.length);
+		for (var y = table.rows.length -1 ; y > 0; y--)
+			{
+				table.deleteRow(y);
+			}
+		
+		console.log("Payload" + payload.length);
+		for (var x = 0; x < payload.length; x++)
+		{
+			var newRow = document.createElement("tr");
+			newRow.id = payload[x].id;
+			
+			var nameCell = document.createElement("td")
+			nameCell.textContent = payload[x].name;
+			newRow.appendChild(nameCell);
+	
+			var repCell = document.createElement("td")
+			repCell.textContent = payload[x].reps;
+			newRow.appendChild(repCell);
+		
+			var weightCell = document.createElement("td")
+			weightCell.textContent = payload[x].weight;
+			newRow.appendChild(weightCell);
+		
+			var dateCell = document.createElement("td")
+			dateCell.textContent = payload[x].date;
+			newRow.appendChild(dateCell);
+		
+			var delCell = document.createElement("td");
+			var del = document.createElement("input");
+			del.type = "submit";
+			del.id = "deleteButton" + payload[x].id;
+			del.name = payload[x].id;
+			del.value = "delete";
+			del.addEventListener('click', function(event){
+				var req = new XMLHttpRequest();
+				var payload = {id:null};
+				payload.id = this.name;
+				console.log(payload.id);
+				req.open('POST', '/del', true);
+				req.setRequestHeader('Content-Type', 'application/json');
+				req.addEventListener('load',function(){
+				if(req.status >= 200 && req.status < 400){
+					var response = JSON.parse(req.responseText);
+					createTable(response);
+				  } else {
+					console.log("Error in network request: " + req.statusText);
+				  }});
+				req.send(JSON.stringify(payload));
+				event.preventDefault();
+				return;
+			});		
+			
+			document.addEventListener('DOMContentLoaded', del.id);
+			delCell.appendChild(del);
+
+
+			
+			newRow.appendChild(delCell);
+			
+			
+			var edCell = document.createElement("td");
+			var ed = document.createElement("input");
+			ed.type = "submit";
+			ed.id = "edit";
+			ed.name = payload[x].id;
+			ed.value = "editButton";
+			edCell.appendChild(ed);
+			newRow.appendChild(ed);
+			
+			table.appendChild(newRow);
+		}
+		return;
+	}
+	
+	
+	
+	document.getElementById('addButton').addEventListener('click', function(event){
+		var req = new XMLHttpRequest();
+		var payload = {name:null, reps:null, weight:null, date:null, lbs:null};
+		
+		payload.name = document.getElementById("name").value;
+		if(payload.name != "")
+		{
+			
+			payload.reps = document.getElementById("reps").value || 0;
+			payload.weight = document.getElementById("weight").value.toString();
+			payload.date = document.getElementById("date").value;
+			if(document.getElementById("lbs").value == "lbs")
+			{
+				payload.lbs = 1;
+				payload.weight += " lbs";
+			}else{
+				payload.lbs = 0;
+				payload.weight += " kg";
+			}
+			req.open('POST', '/add', true);
+			req.setRequestHeader('Content-Type', 'application/json');
+			req.addEventListener('load',function(){
+			if(req.status >= 200 && req.status < 400){
+				var response = JSON.parse(req.responseText);
+				createTable(response);
+			  } else {
+				console.log("Error in network request: " + req.statusText);
+			  }});
+			req.send(JSON.stringify(payload));
+		}
+		event.preventDefault();
+	});
+</script>

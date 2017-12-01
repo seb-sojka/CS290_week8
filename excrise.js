@@ -10,17 +10,11 @@ app.use(express.static('views'));
 
 var exsql = require('./db.js');
 
-var bodyParser = require('body-parser');
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-document.addEventListener('DOMContentLoaded', addButton);
-
 app.get('/',function(req,res,next){
 	var con = {};
-    exsql.pool.query('SELECT name FROM exercises', function(err, rows, fields){
-		con.excerises = JSON.stringify(rows);
+	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
+		console.log(rows);
+		con.exc = rows;
 		res.render('home',con);
 	});
 });	
@@ -32,7 +26,7 @@ app.get('/reset-table',function(req,res,next){
 		"id INT PRIMARY KEY AUTO_INCREMENT,"+
 		"name VARCHAR(255) NOT NULL,"+
 		"reps INT,"+
-		"weight INT,"+
+		"weight VARCHAR(255),"+
 		"date DATE,"+
 		"lbs BOOLEAN)";
 		exsql.pool.query(createString, function(err){
@@ -42,47 +36,38 @@ app.get('/reset-table',function(req,res,next){
   });
 });
 
-app.post('/add',function(req,res,next){
-  var context = {};
-  console.log("Got to post");
-  exsql.pool.query("INSERT INTO todo (`name`) VALUES (?)", [req.query.name], function(err, result){
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.post('/del',function(req,res, next){
+	exsql.pool.query("DELETE FROM exercises WHERE `id` = (?)", 
+	[req.body.id], function(err, result){
     if(err){
       next(err);
       return;
     }
   });
+	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
+
+	res.send(JSON.stringify(rows));
+  });
 });
 
-function addButton(){
-	console.log("Button Pressed");
-	document.getElementById('addButton').addEventListener('click', function(event){
-		var req = new XMLHttpRequest();
-		var payload = {type:null, name:null, reps:null, weight:null, date:null, lbs:null};
-		
-		payload.name = document.getElementById("name").value || null;
-		payload.reps = document.getElementById("reps").value || null;
-		payload.weight = document.getElementById("weight").value || null;
-		payload.date = document.getElementById("date").value || null;
-		if(document.getElementById("lbs").value == lbs)
-		{
-			payload.lbs = 1;
-		}else{
-			payload.lbs = 0;
-		}
-		
-		req.open('POST', 'http://httpbin.org/post', false);
-		req.setRequestHeader('Content-Type', 'application/json');
-		req.addEventListener('load',function(){
-		if(req.status >= 200 && req.status < 400){
-			var response = JSON.parse(req.responseText);
-			console.log(response.json.string);
-		  } else {
-			console.log("Error in network request: " + req.statusText);
-		  }});
-		req.send(JSON.stringify(payload));
-		event.preventDefault();
-	});
-}
+app.post('/add',function(req,res, next){
+  exsql.pool.query("INSERT INTO exercises (`name`, `reps`, `weight`, `date`, `lbs`) VALUES (?, ?, ? ,? ,?)", 
+	[req.body.name, req.body.reps, req.body.weight, req.body.date, req.body.lbs], function(err, result){
+    if(err){
+      next(err);
+      return;
+	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
+		console.log(rows);
+		res.send(JSON.stringify(rows));
+    }
+  });
+	
+  });
+});
 
 app.use(function(req,res){
   res.status(404);
