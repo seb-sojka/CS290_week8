@@ -8,7 +8,7 @@ app.set('view engine', 'handlebars');
 app.set('port', 5454);
 app.use(express.static('views'));
 
-var exsql = require('./dbcon.js');
+var exsql = require('./db.js');
 
 var bodyParser = require('body-parser');
 
@@ -52,39 +52,6 @@ app.post('/add',function(req,res,next){
     }
   });
 });
-
-
-function addButton(){
-	console.log("Button Pressed");
-	document.getElementById('addButton').addEventListener('click', function(event){
-		var req = new XMLHttpRequest();
-		var payload = {type:null, name:null, reps:null, weight:null, date:null, lbs:null};
-		
-		payload.name = document.getElementById("name").value || null;
-		payload.reps = document.getElementById("reps").value || null;
-		payload.weight = document.getElementById("weight").value || null;
-		payload.date = document.getElementById("date").value || null;
-		if(document.getElementById("lbs").value == lbs)
-		{
-			payload.lbs = 1;
-		}else{
-			payload.lbs = 0;
-		}
-		
-		req.open('POST', 'http://httpbin.org/post', false);
-		req.setRequestHeader('Content-Type', 'application/json');
-		req.addEventListener('load',function(){
-		if(req.status >= 200 && req.status < 400){
-			var response = JSON.parse(req.responseText);
-			console.log(response.json.string);
-		  } else {
-			console.log("Error in network request: " + req.statusText);
-		  }});
-		req.send(JSON.stringify(payload));
-		event.preventDefault();
-	});
-}
-
 
 
 app.use(function(req,res){
