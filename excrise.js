@@ -8,13 +8,14 @@ app.set('view engine', 'handlebars');
 app.set('port', 5454);
 app.use(express.static('views'));
 
-var exsql = require('./dbcon.js');
+var exsql = require('./db.js');
 
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+document.addEventListener('DOMContentLoaded', addButton);
 
 app.get('/',function(req,res,next){
 	var con = {};
@@ -44,14 +45,13 @@ app.get('/reset-table',function(req,res,next){
 app.post('/add',function(req,res,next){
   var context = {};
   console.log("Got to post");
-  mysql.pool.query("INSERT INTO todo (`name`) VALUES (?)", [req.query.name], function(err, result){
+  exsql.pool.query("INSERT INTO todo (`name`) VALUES (?)", [req.query.name], function(err, result){
     if(err){
       next(err);
       return;
     }
   });
 });
-
 
 function addButton(){
 	console.log("Button Pressed");
@@ -83,8 +83,6 @@ function addButton(){
 		event.preventDefault();
 	});
 }
-
-
 
 app.use(function(req,res){
   res.status(404);
