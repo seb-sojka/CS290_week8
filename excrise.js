@@ -45,7 +45,7 @@ app.get('/reset-table',function(req,res,next){
 app.post('/add',function(req,res,next){
   var context = {};
   console.log("Got to post");
-  mysql.pool.query("INSERT INTO todo (`name`) VALUES (?)", [req.query.name], function(err, result){
+  exsql.pool.query("INSERT INTO todo (`name`) VALUES (?)", [req.query.name], function(err, result){
     if(err){
       next(err);
       return;
