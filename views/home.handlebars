@@ -60,26 +60,26 @@ Date: <input type="date" id = "date"> </input><br>
 			del.id = "deleteButton" + payload[x].id;
 			del.name = payload[x].id;
 			del.value = "delete";
-			del.addEventListener('click', function(event){
-				var req = new XMLHttpRequest();
-				var payload = {id:null};
-				payload.id = this.name;
-				console.log(payload.id);
-				req.open('POST', '/del', true);
-				req.setRequestHeader('Content-Type', 'application/json');
-				req.addEventListener('load',function(){
-				if(req.status >= 200 && req.status < 400){
-					var response = JSON.parse(req.responseText);
-					createTable(response);
-				  } else {
-					console.log("Error in network request: " + req.statusText);
-				  }});
-				req.send(JSON.stringify(payload));
-				event.preventDefault();
-				return;
-			});		
+			#del.addEventListener('click', function(event){
+				#var req = new XMLHttpRequest();
+				#var payload = {id:null};
+				#payload.id = this.name;
+				#console.log(payload.id);
+				#req.open('POST', '/del', true);
+				#req.setRequestHeader('Content-Type', 'application/json');
+				#req.addEventListener('load',function(){
+				#if(req.status >= 200 && req.status < 400){
+				#	var response = JSON.parse(req.responseText);
+				#	createTable(response);
+				 # } else {
+				#	console.log("Error in network request: " + req.statusText);
+				#  }});
+				#req.send(JSON.stringify(payload));
+				#event.preventDefault();
+				#return;
+			#});		
 			
-			document.addEventListener('DOMContentLoaded', del.id);
+			#document.addEventListener('DOMContentLoaded', del.id);
 			delCell.appendChild(del);
 
 

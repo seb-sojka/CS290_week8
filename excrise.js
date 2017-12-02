@@ -60,13 +60,15 @@ app.post('/add',function(req,res, next){
     if(err){
       next(err);
       return;
+	}
+	});
+	
+	setTimeout(function(){ }, 10);
+	
 	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
 		console.log(rows);
-		res.send(JSON.stringify(rows));
-    }
-  });
-	
-  });
+		res.send(JSON.stringify(rows))});
+    ;
 });
 
 app.use(function(req,res){
