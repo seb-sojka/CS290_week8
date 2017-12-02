@@ -83,6 +83,18 @@ app.post('/add',function(req,res, next){
 	});
 });
 
+app.get('/edit', function(req,res, next){
+	exsql.pool.query('SELECT * FROM exercises WHERE `id` = (?)',[req.query.id], function(err, rows, fields){
+	if(err){
+		next(err);
+		return;
+	}
+	console.log(rows);
+	console.log("*********************************");
+	res.send(JSON.stringify(rows))});
+});
+	
+
 app.use(function(req,res){
   res.status(404);
   res.render('404');
