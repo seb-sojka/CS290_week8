@@ -1,13 +1,50 @@
 <h1>Workout</h1>
-<h4>Eddit Workout</h4><br>
+<h4>Edit Workout</h4><br>
 <form>
-Name: <input type="text" id = "name" value = {{name}}><br>
-Reps:  <input type="number" id = "reps" min="0" value = {{reps}}><br>
-Weight: <input type="number" id = "weight" min="0" step="5" value="30" weights = {{reps}}> </input>
-<select>
-  <option id = "kg" value="kg">kg</option>
-  <option id = "lbs" value="lbs">lbs</option>
-</select><br>
-Date: <input type="date" id = "date"> </input><br>
+{{#each exc}}
+	<input hidden type="text" id = "id" value = {{this.id}}>
+	Name: <input type="text" id = "name" value = {{this.name}}><br>
+	Reps:  <input type="number" id = "reps" min="0" value = {{this.reps}}><br>
+	Weight: <input type="number" id = "weight" min="0" step="5" value = {{this.weight}}> </input>
+	<select>
+	  <option id = "kg" value="kg">kg</option>
+	  <option id = "lbs" value="lbs">lbs</option>
+	</select><br>
+	Date: <input type="date" id = "date" value = {{this.date}}> </input><br>
+{{/each}}
 <input type="submit" id= "editButton" value="edit">
 </form>
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', editButton);
+	document.getElementById('editButton').addEventListener('click', function(event){
+		var req = new XMLHttpRequest();
+		var payload = {name:null, reps:null, weight:null, date:null, lbs:null, id: null};
+		console.log("Edit Button");
+		payload.name = document.getElementById("name").value;
+		if(payload.name != "")
+		{
+			payload.id = document.getElementById("id").value
+			payload.reps = document.getElementById("reps").value;
+			payload.weight = document.getElementById("weight").value.toString();
+			payload.date = document.getElementById("date").value;
+			if(document.getElementById("lbs").value == "lbs")
+			{
+				payload.lbs = 1;
+				payload.weight += " lbs";
+			}else{
+				payload.lbs = 0;
+				payload.weight += " kg";
+			}
+			req.open('POST', '/editrow', true);
+			req.setRequestHeader('Content-Type', 'application/json');
+			req.addEventListener('load',function(){
+			if(req.status >= 200 && req.status < 400){
+				location.href="/";
+			  } else {
+				console.log("Error in network request: " + req.statusText);
+			  }});
+			req.send(JSON.stringify(payload));
+		}
+		event.preventDefault();
+	});
+</script>

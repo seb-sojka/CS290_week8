@@ -84,16 +84,30 @@ app.post('/add',function(req,res, next){
 });
 
 app.get('/edit', function(req,res, next){
+	var con = [];
 	exsql.pool.query('SELECT * FROM exercises WHERE `id` = (?)',[req.query.id], function(err, rows, fields){
 	if(err){
 		next(err);
 		return;
 	}
-	console.log(rows);
 	console.log("*********************************");
-	res.send(JSON.stringify(rows))});
+	con.exc = rows;
+	res.render('edit',con);	
+	});
 });
-	
+
+app.post('/editrow', function(req,res, next){
+  exsql.pool.query("UPDATE exercises SET `name` = ?, `reps` = ?, `weight` = ?, `date` = ?, `lbs` =? WHERE id = ?", 
+	[req.body.name, req.body.reps, req.body.weight, req.body.date, req.body.lbs, req.body.id], function(err, result){
+    if(err){
+		console.log("Error");
+		next(err);
+		return;
+	}
+	console.log();
+	res.send("Updated " + result.changedRows + " rows.")
+	});
+});
 
 app.use(function(req,res){
   res.status(404);
