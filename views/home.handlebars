@@ -22,8 +22,12 @@ Date: <input type="date" id = "date"> </input><br>
 </table>
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', addButton);
+	table = ({{{exc}}});
+	createTable(table);
 	function createTable(payload){
-				
+		
+		console.log(payload);
+		
 		var table = document.getElementById("workout");
 		
 		console.log("Table" + table.rows.length);

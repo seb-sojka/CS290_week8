@@ -13,8 +13,9 @@ var exsql = require('./db.js');
 app.get('/',function(req,res,next){
 	var con = {};
 	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
-		console.log(rows);
-		con.exc = rows;
+		console.log('Start Stringify');
+		console.log(JSON.stringify(rows));
+		con.exc = JSON.stringify(rows);
 		res.render('home',con);
 	});
 });	
@@ -76,7 +77,8 @@ app.post('/add',function(req,res, next){
 			next(err);
 			return;
 		}
-		console.log(rows);
+		console.log('Add Stringify');
+		console.log(JSON.stringify(rows));
 		console.log("*********************************");
 
 		res.send(JSON.stringify(rows))});
