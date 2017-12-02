@@ -44,31 +44,43 @@ app.post('/del',function(req,res, next){
 	exsql.pool.query("DELETE FROM exercises WHERE `id` = (?)", 
 	[req.body.id], function(err, result){
     if(err){
-      next(err);
-      return;
-    }
-  });
-	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
+		console.log("Error");
 
-	res.send(JSON.stringify(rows));
-  });
+		next(err);
+		return;
+    }
+	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
+		if(err){
+			next(err);
+			return;
+		}
+		console.log(rows);
+		console.log("*********************************");
+
+		res.send(JSON.stringify(rows))});
+	});
 });
+ 
 
 app.post('/add',function(req,res, next){
   exsql.pool.query("INSERT INTO exercises (`name`, `reps`, `weight`, `date`, `lbs`) VALUES (?, ?, ? ,? ,?)", 
 	[req.body.name, req.body.reps, req.body.weight, req.body.date, req.body.lbs], function(err, result){
     if(err){
-      next(err);
-      return;
+		console.log("Error");
+		next(err);
+		return;
 	}
-	});
-	
-	setTimeout(function(){ }, 10);
-	
-	exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
+		console.log("Inserted id" + result.insertId);
+		exsql.pool.query('SELECT * FROM exercises', function(err, rows, fields){
+		if(err){
+			next(err);
+			return;
+		}
 		console.log(rows);
+		console.log("*********************************");
+
 		res.send(JSON.stringify(rows))});
-    ;
+	});
 });
 
 app.use(function(req,res){
